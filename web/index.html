@@ -2,79 +2,128 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-  <meta name="theme-color" content="#090c17">
-  <meta name="description" content="AI Pulse：一张卡片了解一条 AI 资讯。">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f4efe4">
+  <meta name="description" content="AI Pulse：像翻书一样浏览每日 AI 资讯。">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/png" href="./icons/icon-192.png">
   <title>AI Pulse · AI 脉冲</title>
   <style>
-  :root{color-scheme:dark;--bg:#090c17;--panel:#11172a;--line:rgba(210,226,255,.12);--muted:#98a5bd;--text:#f0f3fc;--accent:#a694ff;--cyan:#69e4f6}
-  *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);font-family:ui-sans-serif,system-ui,-apple-system,"PingFang SC","Microsoft Yahei",sans-serif;color:var(--text);-webkit-tap-highlight-color:transparent}
-  body{background:radial-gradient(circle at 12% -13%,#283e7a5c,transparent 45%),radial-gradient(circle at 100% 73%,#4f2d7755,transparent 55%),var(--bg);overflow-x:hidden}
-  button{font:inherit;color:inherit;border:0;cursor:pointer}button:disabled{cursor:default;opacity:.28}a{color:inherit}
-  .app{max-width:510px;margin:auto;min-height:100dvh;padding:calc(env(safe-area-inset-top) + 19px) 20px calc(env(safe-area-inset-bottom) + 108px)}
-  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-  .brand{display:flex;align-items:center;gap:11px}.logo{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#9d8afc,#477af3);box-shadow:0 5px 18px #6051dc55;font-weight:900;letter-spacing:-1px}
-  .brand-name{font-weight:780;letter-spacing:.1px;font-size:18px}.brand-caption{display:block;font-size:11px;color:var(--muted);margin-top:1px;letter-spacing:1px}
-  .round{height:41px;width:41px;border:1px solid var(--line);background:#ffffff08;border-radius:14px;display:grid;place-items:center;transition:background .2s}.round:active,.chip:active,.ghost:active{background:#ffffff20}
-  .sectiontop{display:flex;justify-content:space-between;align-items:flex-end;margin:17px 0 16px}.sectiontop h1{font-weight:760;font-size:28px;line-height:1.2;letter-spacing:-.9px;margin:0}.sectiontop p{font-size:12px;color:var(--muted);margin:6px 0 0}
-  .fresh{color:#95e8dc;font-size:12px;display:flex;align-items:center;gap:6px;margin-bottom:4px}.dot{width:6px;height:6px;border-radius:50%;background:#5de9b5;box-shadow:0 0 11px #68ffda88}
-  .chips{display:flex;gap:9px;overflow:auto;scrollbar-width:none;margin-right:-20px;padding-right:20px;margin-bottom:23px}.chips::-webkit-scrollbar{display:none}
-  .chip{white-space:nowrap;background:#ffffff0a;border:1px solid var(--line);color:#aebbd2;padding:8px 14px;border-radius:100px;font-size:13px;min-height:35px}.chip.active{background:#9b8aff2c;color:#e6ddff;border-color:#9b8aff90}
-  .progress-bar{display:flex;gap:5px;margin-bottom:13px;align-items:center}.progress-bar i{height:3px;background:#a0aecd30;border-radius:9px;flex:1;transition:background .2s}.progress-bar i.now{background:linear-gradient(90deg,var(--accent),var(--cyan))}
-  .statrow{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:9px}
-  .deck{perspective:1300px;touch-action:pan-y;user-select:none;position:relative}
-  .deck:before{content:"";z-index:0;position:absolute;inset:13px 12px -8px;background:#242b46;border-radius:27px;opacity:.48;filter:blur(1px)}
-  .card{position:relative;min-height:min(445px,48dvh);border:1px solid #ffffff25;border-radius:27px;overflow:hidden;padding:22px 23px 20px;display:flex;flex-direction:column;box-shadow:0 25px 65px #0008;transition:transform .25s ease,opacity .25s ease;transform:translateX(0);background:linear-gradient(151deg,#252e55 0%,#151a30 63%,#111626 100%)}
-  .card[data-category="开源模型"]{background:linear-gradient(151deg,#243e40,#152b31 61%,#111c2c)}
-  .card[data-category="AI 编程"]{background:linear-gradient(151deg,#2d2d57,#1b1938 62%,#151529)}
-  .card[data-category="科研论文"]{background:linear-gradient(151deg,#3d2c43,#241a31 63%,#161526)}
-  .card[data-category="AI 硬件"]{background:linear-gradient(151deg,#352b3c,#241b30 63%,#161526)}
-  .card:after{content:"";position:absolute;pointer-events:none;inset:0;background:radial-gradient(circle at 110% -16%,#fefeff1b,transparent 50%)}
-  .card-header,.card-body,.card-footer{position:relative;z-index:1}
-  .card-header{display:flex;justify-content:space-between;align-items:center;gap:6px}.source{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:650;color:#eef0ff}.sourceicon{width:21px;height:21px;display:grid;place-items:center;background:#ffffff1c;border-radius:7px;font-size:11px}
-  .age{font-size:11px;color:#b9c7dc}
-  .visual{flex:1;display:grid;place-items:center;min-height:100px;position:relative}
-  .hero-orb{position:relative;width:122px;height:122px;border-radius:50%;background:radial-gradient(circle at 34% 32%,#d5f4ff,#7288fa 30%,#593ed1 56%,#15154d 75%);box-shadow:0 0 42px #7867ff66,0 0 105px #6f50c834;animation:breathe 5s ease-in-out infinite}
-  .hero-orb:before,.hero-orb:after{content:"";position:absolute;border:1px solid #dedaff65;border-radius:50%;inset:-25px;transform:rotateX(62deg) rotateZ(15deg)}.hero-orb:after{inset:-41px;border-color:#7ab5ff4d;transform:rotateY(71deg) rotateZ(-26deg)}
-  .hero-symbol{position:absolute;inset:0;display:grid;place-items:center;font-size:52px;font-weight:800;text-shadow:0 6px 24px #25358185;letter-spacing:-9px;padding-right:10px}
-  @keyframes breathe{50%{transform:translateY(-7px) scale(1.035)}}
-  .category{display:inline-flex;align-items:center;width:max-content;font-size:11px;font-weight:700;letter-spacing:1px;background:#ffffff1b;border:1px solid #ffffff26;border-radius:7px;padding:5px 9px;margin-bottom:12px;color:#d9d7ff}
-  .card h2{font-size:clamp(23px,5.7vw,29px);line-height:1.32;letter-spacing:-.65px;margin:0 0 12px;font-weight:810;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-  .summary{font-size:14px;line-height:1.75;color:#c3cee0;margin:0;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
-  .card-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #ffffff26;padding-top:15px;margin-top:18px}
-  .read-btn{display:flex;align-items:center;gap:8px;background:#eff2ff;color:#23243c;font-weight:750;border-radius:11px;padding:11px 15px;font-size:13px}.bookmark{background:#ffffff14;border:1px solid #ffffff2c;width:43px;height:43px;border-radius:12px;font-size:21px}.bookmark.saved{color:#ffe8a2;background:#e9b94020}
-  .nav-arrows{display:flex;align-items:center;justify-content:center;gap:19px;margin-top:20px}.nav-arrows button{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:#ffffff0d;font-size:22px}.nav-index{font-size:13px;color:#b5bfd2;min-width:64px;text-align:center}.hint{text-align:center;color:#8995ae;font-size:12px;margin-top:13px}
-  .footnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,510px);display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;padding:12px 18px calc(env(safe-area-inset-bottom) + 12px);border-top:1px solid #ffffff17;background:#101528ee;backdrop-filter:blur(20px);z-index:5}
-  .tab{background:transparent;color:#94a1b9;border-radius:12px;padding:8px 5px;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:4px}.tab .ico{font-size:21px}.tab.active{color:#e2d5ff;background:#a58dff12}
-  .empty{min-height:440px;border:1px dashed var(--line);border-radius:27px;display:grid;place-content:center;text-align:center;padding:35px;gap:12px;color:#cad4e6}.empty strong{font-size:20px}.empty p{font-size:13px;color:var(--muted);line-height:1.7;margin:0}
-  .overlay{position:fixed;inset:0;z-index:20;background:#03040acc;display:none;align-items:end;justify-content:center}.overlay.open{display:flex}.sheet{max-width:540px;width:100%;max-height:89dvh;overflow:auto;padding:12px 22px calc(env(safe-area-inset-bottom) + 26px);border-radius:25px 25px 0 0;background:#151a2e;border:1px solid #ffffff22;box-shadow:0 -12px 65px #000a}
-  .sheet-handle{width:39px;height:4px;border-radius:4px;background:#75839a80;margin:0 auto 25px}.sheet h2{font-size:25px;line-height:1.38;margin:8px 0 15px}.sheet p{font-size:15px;line-height:1.8;color:#c4cce0}.sheet .pill{font-size:11px;color:#adabff;letter-spacing:1px}.sheet h3{margin:25px 0 5px;font-size:14px;color:#c8c4ff}.sheet .close{float:right;border-radius:9px;padding:7px 11px;background:#ffffff12}.open-source{display:block;text-align:center;margin-top:22px;background:#e9edff;color:#15192e;border-radius:13px;padding:13px;font-weight:780;text-decoration:none}
-  .settings{border:1px solid var(--line);border-radius:18px;padding:21px;background:#ffffff07}.settings h3{margin:0 0 14px}.settings p{font-size:13px;color:var(--muted);line-height:1.8}.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid #ffffff12;font-size:14px}.toggle-row input{accent-color:#9c8dff;width:19px;height:19px}
-  .banner{padding:10px 12px;border:1px solid #e4c77844;background:#a37f2421;border-radius:10px;color:#d4c89c;font-size:12px;line-height:1.5;margin-bottom:12px}
-  .reload{font-size:12px;border:1px solid var(--line);background:#ffffff0a;border-radius:8px;padding:7px 10px;color:#d2dbeb}
-  @media (min-width:700px){.app{padding-top:36px}.card{min-height:535px}.visual{min-height:165px}.hero-orb{width:150px;height:150px}}
-  @media (max-width:600px){.nav-arrows,.hint{display:none!important}}
-  @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+  :root{
+    --paper:#f4efe4; --note-bg:#efe8d7; --ink:#2b261c; --ink-soft:#5c5545;
+    --ink-faint:#8d8371; --rule:#d8cfba; --rule-strong:#2b261c; --seal:#963a28;
+    --serif:"Georgia","Times New Roman","Songti SC","STSong","Noto Serif CJK SC","Source Han Serif SC","SimSun",serif;
+    color-scheme:light;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);-webkit-tap-highlight-color:transparent}
+  body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:repeating-linear-gradient(0deg,rgba(120,100,60,.025) 0 1px,transparent 1px 4px)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+  .page{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:0 22px}
+
+  /* ── 报头 ── */
+  .mast{padding-top:calc(env(safe-area-inset-top) + 16px)}
+  .mast-top{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--ink-faint);letter-spacing:.08em}
+  .mast-top .nav{display:flex;gap:16px}
+  .nav-link{color:var(--ink-soft);border-bottom:1px solid transparent;padding-bottom:2px;letter-spacing:.12em}
+  .nav-link.active{color:var(--seal);border-bottom-color:var(--seal)}
+  .mast-title{text-align:center;font-size:36px;font-weight:700;letter-spacing:.35em;text-indent:.35em;margin:16px 0 3px}
+  .mast-sub{text-align:center;font-size:11px;letter-spacing:.34em;text-indent:.34em;color:var(--ink-faint);margin:0 0 14px;text-transform:uppercase}
+  .rule{border:0;border-top:2px solid var(--rule-strong);margin:0}
+  .rule.thin{border-top-width:1px;margin-top:3px}
+
+  /* ── 分类 ── */
+  .chips{display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:center;padding:11px 0;border-bottom:1px solid var(--rule);font-size:13px}
+  .chip{color:var(--ink-soft);letter-spacing:.05em}
+  .chip.active{color:var(--seal);font-weight:700}
+
+  /* ── 快讯列表 ── */
+  .entry{display:flex;gap:14px;padding:17px 2px;border-bottom:1px dotted var(--rule);cursor:pointer}
+  .entry:active{background:var(--note-bg)}
+  .entry-no{font-size:13px;color:var(--ink-faint);min-width:2.1em;padding-top:3px;font-variant-numeric:oldstyle-nums}
+  .entry-main{flex:1;min-width:0}
+  .entry-title{margin:0 0 5px;font-size:17px;line-height:1.5;font-weight:700}
+  .entry.read .entry-title{color:var(--ink-faint);font-weight:500}
+  .entry-snippet{margin:0 0 7px;font-size:13px;line-height:1.75;color:var(--ink-soft);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .entry-meta{font-size:11.5px;color:var(--ink-faint);letter-spacing:.06em;display:flex;align-items:center;gap:7px}
+  .entry-meta .cat{color:var(--seal)}
+  .fav{margin-left:auto;font-size:16px;color:var(--ink-faint);padding:0 4px;line-height:1}
+  .fav.saved{color:var(--seal)}
+  .empty{padding:64px 20px;text-align:center;color:var(--ink-faint);font-size:14px;line-height:2.1}
+
+  /* ── 提示与页脚 ── */
+  .note{border:1px solid var(--rule);border-left:3px solid var(--seal);background:var(--note-bg);
+    padding:10px 14px;font-size:12.5px;line-height:1.9;color:var(--ink-soft);margin:14px 0 2px}
+  .colophon{padding:24px 0 calc(env(safe-area-inset-bottom) + 34px);text-align:center;font-size:11.5px;color:var(--ink-faint);letter-spacing:.08em;line-height:2}
+
+  /* ── 阅读页 ── */
+  .reader{position:fixed;inset:0;background:var(--paper);z-index:10;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .reader[hidden]{display:none}
+  .reader:before{content:"";position:fixed;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(0deg,rgba(120,100,60,.025) 0 1px,transparent 1px 4px)}
+  .reader-inner{position:relative;max-width:680px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 14px) 22px calc(env(safe-area-inset-bottom) + 44px)}
+  .back{font-size:13px;color:var(--seal);letter-spacing:.14em;margin-bottom:22px}
+  .reader-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .kicker{font-size:11.5px;letter-spacing:.16em;color:var(--ink-faint);text-transform:uppercase}
+  .reader .fav{font-size:20px}
+  .reader h2{font-size:27px;line-height:1.5;margin:10px 0 16px;font-weight:700}
+  .reader-rule{border:0;border-top:1px solid var(--rule-strong);margin:0 0 18px;opacity:.55}
+  .reader .body p{font-size:15.5px;line-height:2.05;margin:0 0 15px;text-align:justify;color:var(--ink)}
+  .reader h3.sec{font-size:13px;letter-spacing:.22em;color:var(--seal);margin:22px 0 8px;font-weight:700}
+  .reader .fine{font-size:12px;color:var(--ink-faint);line-height:1.9}
+  .src-btn{display:inline-block;margin:20px 0 4px;padding:10px 20px;border:1px solid var(--rule-strong);
+    color:var(--ink);text-decoration:none;font-size:13.5px;letter-spacing:.1em}
+  .src-btn:active{background:var(--note-bg)}
+  .pager{display:flex;justify-content:space-between;gap:18px;border-top:1px solid var(--rule);margin-top:30px;padding-top:16px}
+  .pager button{font-size:13px;color:var(--ink-soft);line-height:1.6;max-width:46%}
+  .pager button:disabled{color:var(--rule);cursor:default}
+  .pager .next{text-align:right;margin-left:auto}
+  .pager .dir{display:block;font-size:11px;color:var(--ink-faint);letter-spacing:.18em;margin-bottom:3px}
+
+  /* ── 偏好 ── */
+  .settings{padding:18px 0 10px}
+  .settings h3{font-size:14px;letter-spacing:.2em;color:var(--ink);margin:20px 0 6px}
+  .toggle-row{display:flex;justify-content:space-between;align-items:center;padding:13px 2px;border-bottom:1px dotted var(--rule);font-size:14.5px}
+  .toggle-row input{accent-color:var(--seal);width:18px;height:18px}
+  .settings p{font-size:12.5px;color:var(--ink-faint);line-height:1.95;margin:10px 0}
+  .reload-btn{margin-top:14px;padding:9px 18px;border:1px solid var(--rule-strong);font-size:13px;letter-spacing:.1em}
+
+  @media (max-width:420px){.mast-title{font-size:30px}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
   </style>
 </head>
 <body>
-  <main class="app">
-    <header class="top"><div class="brand"><div class="logo">AI</div><div><div class="brand-name">AI Pulse <span style="color:#a69bff">/</span> 脉冲</div><small class="brand-caption">YOUR DAILY INTELLIGENCE</small></div></div><button class="round" aria-label="刷新数据" id="refresh">⟳</button></header>
-    <div class="sectiontop"><div><h1 id="page-title">今天，AI 发生了什么？</h1><p id="subtitle">精选模型、工具与科研进展</p></div><div class="fresh"><span class="dot"></span><span id="status">读取中</span></div></div>
-    <div id="banner" class="banner" hidden></div>
-    <div id="chips" class="chips" aria-label="分类"></div>
-    <div id="progress" class="progress-bar" aria-hidden="true"></div>
-    <div class="statrow"><span id="count">正在加载…</span><span id="updated"></span></div>
-    <div id="deck" class="deck"></div>
-    <div id="arrows" class="nav-arrows"><button id="prev" aria-label="上一条">←</button><div class="nav-index" id="index">-- / --</div><button id="next" aria-label="下一条">→</button></div>
-    <p class="hint" id="hint">左右滑动卡片浏览 · 点击阅读全文</p>
-  </main>
-  <nav class="footnav" aria-label="底部导航"><button class="tab active" data-tab="feed"><span class="ico">◈</span>资讯</button><button class="tab" data-tab="saved"><span class="ico">♡</span>收藏</button><button class="tab" data-tab="settings"><span class="ico">☷</span>偏好</button></nav>
-  <div id="overlay" class="overlay" aria-hidden="true"><div class="sheet" role="dialog" aria-modal="true"><div class="sheet-handle"></div><button class="close" id="close" aria-label="关闭详情">关闭 ×</button><div id="detail"></div></div></div>
+  <div class="page">
+    <header class="mast">
+      <div class="mast-top">
+        <span id="mast-date"></span>
+        <nav class="nav" aria-label="版块">
+          <button class="nav-link active" data-tab="feed">快讯</button>
+          <button class="nav-link" data-tab="saved">收藏</button>
+          <button class="nav-link" data-tab="prefs">偏好</button>
+          <button class="nav-link" id="refresh" aria-label="刷新">↻</button>
+        </nav>
+      </div>
+      <h1 class="mast-title">AI 脉冲</h1>
+      <p class="mast-sub">AI Pulse · 每日文摘</p>
+      <hr class="rule"><hr class="rule thin">
+    </header>
+    <div id="banner" hidden></div>
+    <nav id="chips" class="chips" aria-label="分类筛选"></nav>
+    <main id="list"></main>
+    <footer class="colophon" id="colophon"></footer>
+  </div>
+
+  <div id="reader" class="reader" hidden>
+    <div class="reader-inner">
+      <button class="back" id="back">← 返回目录</button>
+      <div id="reader-body"></div>
+    </div>
+  </div>
+
   <script src="./app.js" defer></script>
 </body>
 </html>
